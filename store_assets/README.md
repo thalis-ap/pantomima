@@ -21,9 +21,7 @@ store_assets/
 │       ├── 03_gameplay_3min_timer.png
 │       ├── 04_gameplay_streak.png
 │       ├── 05_settings_screen.png
-│       ├── 06_free_play_time_up.png
-│       └── raw/
-│           └── (original uncropped 1080x2400 captures)
+│       └── 06_free_play_time_up.png
 └── app_store/
     ├── icons/
     │   └── app_store_icon_1024x1024.png

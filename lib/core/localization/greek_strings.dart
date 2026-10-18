@@ -8,11 +8,8 @@ class GreekStrings {
   static const String appTagline =
       'Το απόλυτο παιχνίδι παρέας με δράση, γέλιο και μαντεψιές!';
   static const String offlineNotice = '100.000 φράσεις • 100% χωρίς ίντερνετ';
-  static const String ok = 'Εντάξει';
   static const String cancel = 'Ακύρωση';
   static const String confirm = 'Επιβεβαίωση';
-  static const String save = 'Αποθήκευση';
-  static const String error = 'Σφάλμα';
   static const String retry = 'Δοκιμάστε ξανά';
   static const String loading = 'Φόρτωση φράσεων...';
 
@@ -23,14 +20,12 @@ class GreekStrings {
   static const String freePlay = 'Ελεύθερο Παιχνίδι';
   static const String freePlaySubtitle = 'Χαλαρή διασκέδαση χωρίς βαθμολογία!';
   static const String settings = 'Ρυθμίσεις';
-  static const String settingsSubtitle = 'Ήχοι, δονήσεις, εμφάνιση και χρόνος';
 
   // Difficulties
   static const String easy = 'Εύκολο';
   static const String medium = 'Μεσαίο';
   static const String hard = 'Δύσκολο';
   static const String impossible = 'Ακατόρθωτο';
-  static const String allDifficulties = 'Όλες οι δυσκολίες';
 
   // Team Setup
   static const String setupTitle = 'Ρύθμιση Ομάδων';
@@ -45,10 +40,7 @@ class GreekStrings {
   static const String emptyTeamNameError =
       'Το όνομα ομάδας δεν μπορεί να είναι κενό.';
   static const String roundDuration = 'Διάρκεια Γύρου';
-  static const String customDuration = 'Προσαρμοσμένος Χρόνος';
   static const String seconds = 'δευτ.';
-  static const String minutes = 'λεπτά';
-  static const String threeMinutes = '3 λεπτά';
   static const String difficultySelection = 'Επιλογή Δυσκολίας';
   static const String selectAtLeastOneDifficulty =
       'Επιλέξτε τουλάχιστον μία δυσκολία.';
@@ -57,7 +49,6 @@ class GreekStrings {
   static const String roundsOption5 = '5 γύροι';
   static const String roundsOption10 = '10 γύροι';
   static const String roundsCustom = 'Προσαρμοσμένο';
-  static const String roundsUnit = 'γύροι';
   static const String invalidRoundsError =
       'Ο αριθμός γύρων πρέπει να είναι θετικός ακέραιος (τουλάχιστον 1).';
   static const String startGame = 'Έναρξη Παιχνιδιού';
@@ -74,7 +65,6 @@ class GreekStrings {
   static const String nextPhrase = 'Επόμενη Φράση';
   static const String pause = 'Παύση';
   static const String resume = 'Συνέχεια';
-  static const String restart = 'Επανεκκίνηση';
   static const String exitGame = 'Έξοδος';
   static const String exitConfirmationTitle = 'Έξοδος από το παιχνίδι;';
   static const String exitConfirmationContent =
@@ -84,9 +74,7 @@ class GreekStrings {
       'Είστε σίγουροι ότι θέλετε να ολοκληρώσετε το παιχνίδι πρόωρα; Το σκορ θα διατηρηθεί.';
   static const String earlyEndAction = 'Τερματισμός';
   static const String timeUp = 'Τέλος Χρόνου!';
-  static const String nextTurn = 'Επόμενη Ομάδα';
   static const String scoreLabel = 'Βαθμοί:';
-  static const String currentScore = 'Σκορ';
   static const String freePlayModeTitle = 'Ελεύθερο Παιχνίδι';
   static const String freePlayTimeUpTitle = 'Ο χρόνος τελείωσε!';
   static const String freePlayTimeUpSubtitle = 'Η προσπάθεια ολοκληρώθηκε!';
@@ -96,7 +84,6 @@ class GreekStrings {
   static const String streakBonus = 'Μπόνους σερί';
   static const String streakBonusDescription =
       'Κερδίστε επιπλέον πόντους για συνεχόμενες σωστές φράσεις.';
-  static const String streakBonusAwarded = 'μπόνους σερί';
 
   // Standings & Scoreboard
   static const String standingsTitle = 'Βαθμολογία';
@@ -138,7 +125,6 @@ class GreekStrings {
       'Καταχώριση σωστής απάντησης (+1 πόντος)';
   static const String passButtonSemantic =
       'Πάσο στην επόμενη φράση (χωρίς πόντο)';
-  static const String pauseButtonSemantic = 'Παύση χρονομέτρου';
   static const String resumeButtonSemantic = 'Συνέχιση χρονομέτρου';
   static const String phraseSemantic = 'Φράση παντομίμας προς υπόδυση';
   static const String difficultySemantic = 'Βαθμός δυσκολίας φράσης';

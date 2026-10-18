@@ -69,7 +69,7 @@
       "format": "PNG (RGB)",
       "color_mode": "RGB",
       "status": "upload_ready",
-      "description": "Team setup screen showcasing round configuration, difficulty selectors, and the new «3 λεπτά» (180s) timer option selected."
+      "description": "Team setup screen showcasing round configuration, difficulty selectors, and the new «180 δευτ.» (180s) timer option selected."
     },
     {
       "id": "gp_screenshot_03",
@@ -108,7 +108,7 @@
       "format": "PNG (RGB)",
       "color_mode": "RGB",
       "status": "upload_ready",
-      "description": "Settings screen displaying audio toggles, theme selector, «3 λεπτά» timer preset, streak bonus toggle, and About section with updated mime logo."
+      "description": "Settings screen displaying audio toggles, theme selector, «180 δευτ.» timer preset, streak bonus toggle, and About section with updated mime logo."
     },
     {
       "id": "gp_screenshot_06",
