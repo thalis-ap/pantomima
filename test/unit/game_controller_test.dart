@@ -295,6 +295,46 @@ void main() {
       },
     );
 
+    test(
+      '3-minute (180s) timer starts at 180s, counts down and expires accurately',
+      () {
+        final teams = [
+          const Team(id: 't1', name: 'Ομάδα Α', score: 0, color: Colors.purple),
+        ];
+
+        final controller = GameController(
+          phraseRepository: repository,
+          nowProvider: fakeNow,
+        );
+
+        controller.setupGame(
+          GameConfiguration(
+            mode: GameMode.team,
+            teams: teams,
+            roundDurationSeconds: 180,
+          ),
+        );
+
+        expect(controller.remainingSeconds, 180);
+        expect(controller.totalDurationSeconds, 180);
+
+        controller.startRound();
+        expect(controller.phase, GamePhase.running);
+        expect(controller.remainingSeconds, 180);
+
+        // Simulate 60 seconds elapsed
+        fakeCurrentTime = fakeCurrentTime.add(const Duration(seconds: 60));
+        controller.tickForTesting();
+        expect(controller.remainingSeconds, 120);
+
+        // Simulate remaining 120 seconds elapsed
+        fakeCurrentTime = fakeCurrentTime.add(const Duration(seconds: 120));
+        controller.tickForTesting();
+        expect(controller.remainingSeconds, 0);
+        expect(controller.phase, GamePhase.roundExpired);
+      },
+    );
+
     test('Prevents scoring after round expiration', () {
       final teams = [
         const Team(id: 't1', name: 'Ομάδα 1', score: 0, color: Colors.purple),

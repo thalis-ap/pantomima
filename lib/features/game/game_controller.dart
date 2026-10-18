@@ -175,6 +175,7 @@ class GameController extends ChangeNotifier {
   @visibleForTesting
   void tickForTesting() {
     _actionLocked = false;
+    _onTimerTick();
   }
 
   /// Handles timer expiration exactly once

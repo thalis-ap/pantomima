@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../core/localization/greek_strings.dart';
 
 /// Service managing persistent local settings using SharedPreferences
 class StorageService {
@@ -59,7 +60,12 @@ class StorageService {
   }
 
   static const int kDefaultRoundDurationSeconds = 60;
-  static const List<int> availableDurations = [30, 45, 60, 90, 120];
+  static const List<int> availableDurations = [30, 45, 60, 90, 120, 180];
+
+  /// Returns localized duration label (e.g. '180 δευτ.' for 180, '60 δευτ.' for 60)
+  static String formatDuration(int seconds) {
+    return '$seconds ${GreekStrings.seconds}';
+  }
 
   int get defaultRoundDuration {
     final val = _prefs?.getInt(_keyDefaultRoundDuration);

@@ -48,6 +48,7 @@ class GreekStrings {
   static const String customDuration = 'Προσαρμοσμένος Χρόνος';
   static const String seconds = 'δευτ.';
   static const String minutes = 'λεπτά';
+  static const String threeMinutes = '3 λεπτά';
   static const String difficultySelection = 'Επιλογή Δυσκολίας';
   static const String selectAtLeastOneDifficulty =
       'Επιλέξτε τουλάχιστον μία δυσκολία.';

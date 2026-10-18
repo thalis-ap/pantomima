@@ -44,9 +44,25 @@ void main() {
       storage.defaultRoundDuration = 120;
       expect(storage.defaultRoundDuration, 120);
 
+      storage.defaultRoundDuration = 180;
+      expect(storage.defaultRoundDuration, 180);
+
       storage.defaultRoundDuration = 30;
       expect(storage.defaultRoundDuration, 30);
     });
+
+    test(
+      '3 minutes (180 seconds) is supported in presets and formatted properly',
+      () async {
+        expect(StorageService.availableDurations.contains(180), isTrue);
+        expect(StorageService.formatDuration(180), '180 δευτ.');
+        expect(StorageService.formatDuration(60), '60 δευτ.');
+
+        SharedPreferences.setMockInitialValues({'default_round_duration': 180});
+        final storage = await StorageService.create();
+        expect(storage.defaultRoundDuration, 180);
+      },
+    );
 
     test('Reset to defaults restores 60 seconds', () async {
       SharedPreferences.setMockInitialValues({'default_round_duration': 45});

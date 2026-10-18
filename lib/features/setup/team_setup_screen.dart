@@ -376,7 +376,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
               ],
               const SizedBox(height: 24),
 
-              // Duration Section (Explicit presets: 30, 45, 60, 90, 120s)
+              // Duration Section (Explicit presets: 30, 45, 60, 90, 120, 180s)
               const Text(
                 GreekStrings.roundDuration,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -385,7 +385,7 @@ class _TeamSetupScreenState extends State<TeamSetupScreen> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: [30, 45, 60, 90, 120].map((dur) {
+                children: [30, 45, 60, 90, 120, 180].map((dur) {
                   return ChoiceChip(
                     label: Text('$dur ${GreekStrings.seconds}'),
                     selected: _selectedDuration == dur,

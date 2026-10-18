@@ -1,4 +1,4 @@
-# Παντομιμα (Pantomima) — Premium Offline Greek Party Game
+# Παντομίμα (Pantomima) — Premium Offline Greek Party Game
 
 A production-quality Flutter party game for Greek-speaking friends and families, operating 100% offline with zero runtime network dependency and exactly 100,000 unique, validated Greek game phrases.
 
@@ -28,7 +28,7 @@ A production-quality Flutter party game for Greek-speaking friends and families,
 
 ```
 pantomime_ai/
-├── android/                    # Android platform configuration (app label: «Παντομιμα»)
+├── android/                    # Android platform configuration (app label: «Παντομίμα»)
 ├── assets/
 │   ├── audio/                  # Synthesized WAV audio effects (correct, pass, tick, buzzer)
 │   └── data/

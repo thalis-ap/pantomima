@@ -23,14 +23,7 @@ class AppLogo extends StatelessWidget {
       decoration: BoxDecoration(
         shape: borderRadius == null ? BoxShape.circle : BoxShape.rectangle,
         borderRadius: borderRadius,
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF8B5CF6), // Primary Violet
-            Color(0xFF6D28D9), // Deep Purple
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        gradient: AppColors.heroGradient,
         boxShadow: showShadow
             ? [
                 BoxShadow(

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Phrase Processing Engine for «Παντομιμα»
+Phrase Processing Engine for «Παντομίμα»
 
 Ingests raw Greek phrases from a text file (default: frases100000.txt), validates
 and groups phrases by word count (3, 4, 5, 6, 7, 8 words), removes exact duplicates,

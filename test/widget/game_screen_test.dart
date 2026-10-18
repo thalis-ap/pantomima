@@ -107,6 +107,38 @@ void main() {
       controller.pauseRound();
     });
 
+    testWidgets('Displays 03:00 for 180s round and updates countdown', (
+      tester,
+    ) async {
+      final timerController = GameController(phraseRepository: repository);
+      timerController.setupGame(
+        const GameConfiguration(
+          mode: GameMode.team,
+          teams: [
+            Team(id: 't1', name: 'Ομάδα 1', score: 0, color: Colors.purple),
+          ],
+          roundDurationSeconds: 180,
+        ),
+      );
+      addTearDown(timerController.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: GameScreen(controller: timerController, onExit: () {}),
+        ),
+      );
+
+      // Start round
+      await tester.tap(find.text('Έναρξη Γύρου'));
+      await tester.pump();
+
+      // Verify timer displays 03:00 when round starts
+      expect(find.text('03:00'), findsOneWidget);
+
+      timerController.finishGame();
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('Shows exit confirmation dialog when back button is pressed', (
       tester,
     ) async {

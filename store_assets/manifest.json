@@ -1,0 +1,161 @@
+{
+  "app_name": "Παντομίμα",
+  "application_id": "com.symplyapps.pantomima",
+  "version": "1.0.0",
+  "timestamp": "2026-10-18T17:40:00Z",
+  "branding": {
+    "artwork": "assets/icon/mime.png",
+    "gradient": "Hero Gradient (Purple #6D28D9 to Indigo #4F46E5 to Cyan #06B6D4)",
+    "spelling": "Παντομίμα (accented with tonos on ί)"
+  },
+  "deliverables": [
+    {
+      "id": "google_play_icon",
+      "name": "Google Play Listing Icon",
+      "path": "store_assets/google_play/icons/google_play_icon_512x512.png",
+      "target_store": "Google Play Console",
+      "upload_field": "App icon",
+      "dimensions": "512x512",
+      "format": "PNG",
+      "color_mode": "RGBA",
+      "status": "upload_ready",
+      "description": "512x512 high-resolution icon with full-bleed hero purple gradient and centered mime drawing within the safe area."
+    },
+    {
+      "id": "google_play_feature_graphic",
+      "name": "Google Play Feature Graphic",
+      "path": "store_assets/google_play/feature_graphic/google_play_feature_graphic_1024x500.png",
+      "target_store": "Google Play Console",
+      "upload_field": "Feature graphic",
+      "dimensions": "1024x500",
+      "format": "PNG (24-bit RGB, no alpha)",
+      "color_mode": "RGB",
+      "status": "upload_ready",
+      "description": "1024x500 banner with full-bleed purple hero gradient, glowing mime artwork on the left, and crisp bold Greek title «Παντομίμα» with subtitle."
+    },
+    {
+      "id": "app_store_master_icon",
+      "name": "App Store Master Icon",
+      "path": "store_assets/app_store/icons/app_store_icon_1024x1024.png",
+      "target_store": "App Store Connect",
+      "upload_field": "App Store Icon (1024x1024)",
+      "dimensions": "1024x1024",
+      "format": "PNG (24-bit RGB, no alpha)",
+      "color_mode": "RGB",
+      "status": "upload_ready",
+      "description": "1024x1024 high-res icon, strictly opaque RGB without alpha transparency, following Apple App Store submission guidelines."
+    },
+    {
+      "id": "gp_screenshot_01",
+      "name": "Google Play Screenshot 1 - Home Screen",
+      "path": "store_assets/google_play/screenshots/01_home_screen.png",
+      "target_store": "Google Play Console",
+      "upload_field": "Phone screenshots",
+      "dimensions": "1080x2160",
+      "aspect_ratio": "1:2 (18:9)",
+      "format": "PNG (RGB)",
+      "color_mode": "RGB",
+      "status": "upload_ready",
+      "description": "Home screen showing hero mime branding, «Παντομίμα», game mode options, and 100,000 phrases badge."
+    },
+    {
+      "id": "gp_screenshot_02",
+      "name": "Google Play Screenshot 2 - Team Setup Screen",
+      "path": "store_assets/google_play/screenshots/02_team_setup_screen.png",
+      "target_store": "Google Play Console",
+      "upload_field": "Phone screenshots",
+      "dimensions": "1080x2160",
+      "aspect_ratio": "1:2 (18:9)",
+      "format": "PNG (RGB)",
+      "color_mode": "RGB",
+      "status": "upload_ready",
+      "description": "Team setup screen showcasing round configuration, difficulty selectors, and the new «3 λεπτά» (180s) timer option selected."
+    },
+    {
+      "id": "gp_screenshot_03",
+      "name": "Google Play Screenshot 3 - Active Gameplay with 3-Min Timer",
+      "path": "store_assets/google_play/screenshots/03_gameplay_3min_timer.png",
+      "target_store": "Google Play Console",
+      "upload_field": "Phone screenshots",
+      "dimensions": "1080x2160",
+      "aspect_ratio": "1:2 (18:9)",
+      "format": "PNG (RGB)",
+      "color_mode": "RGB",
+      "status": "upload_ready",
+      "description": "Active gameplay screen with the circular countdown timer running at 02:59, phrase card, and game action buttons."
+    },
+    {
+      "id": "gp_screenshot_04",
+      "name": "Google Play Screenshot 4 - Gameplay with Streak Indicator",
+      "path": "store_assets/google_play/screenshots/04_gameplay_streak.png",
+      "target_store": "Google Play Console",
+      "upload_field": "Phone screenshots",
+      "dimensions": "1080x2160",
+      "aspect_ratio": "1:2 (18:9)",
+      "format": "PNG (RGB)",
+      "color_mode": "RGB",
+      "status": "upload_ready",
+      "description": "Gameplay screen demonstrating the in-card streak indicator (🔥 3 +1) with translucent orange badge styling and active score."
+    },
+    {
+      "id": "gp_screenshot_05",
+      "name": "Google Play Screenshot 5 - Settings Screen",
+      "path": "store_assets/google_play/screenshots/05_settings_screen.png",
+      "target_store": "Google Play Console",
+      "upload_field": "Phone screenshots",
+      "dimensions": "1080x2160",
+      "aspect_ratio": "1:2 (18:9)",
+      "format": "PNG (RGB)",
+      "color_mode": "RGB",
+      "status": "upload_ready",
+      "description": "Settings screen displaying audio toggles, theme selector, «3 λεπτά» timer preset, streak bonus toggle, and About section with updated mime logo."
+    },
+    {
+      "id": "gp_screenshot_06",
+      "name": "Google Play Screenshot 6 - Free Play Timeout Screen",
+      "path": "store_assets/google_play/screenshots/06_free_play_time_up.png",
+      "target_store": "Google Play Console",
+      "upload_field": "Phone screenshots",
+      "dimensions": "1080x2160",
+      "aspect_ratio": "1:2 (18:9)",
+      "format": "PNG (RGB)",
+      "color_mode": "RGB",
+      "status": "upload_ready",
+      "description": "Dedicated Free Play timeout screen displaying «Ο χρόνος τελείωσε!», last phrase, and Next Phrase action without winner screens."
+    }
+  ],
+  "project_connected_assets": [
+    {
+      "platform": "Android",
+      "type": "Mipmap Adaptive & Legacy Icons",
+      "locations": [
+        "android/app/src/main/res/mipmap-mdpi/ic_launcher.png (48x48)",
+        "android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png (48x48)",
+        "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png (108x108)",
+        "android/app/src/main/res/mipmap-hdpi/ic_launcher.png (72x72)",
+        "android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png (72x72)",
+        "android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png (162x162)",
+        "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png (96x96)",
+        "android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png (96x96)",
+        "android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png (216x216)",
+        "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png (144x144)",
+        "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png (144x144)",
+        "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png (324x324)",
+        "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png (192x192)",
+        "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png (192x192)",
+        "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png (432x432)"
+      ],
+      "status": "connected_and_installed"
+    },
+    {
+      "platform": "iOS",
+      "type": "Asset Catalog AppIcon",
+      "locations": [
+        "ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+        "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+        "ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-*.png (all required idiom scales)"
+      ],
+      "status": "connected_in_repo"
+    }
+  ]
+}

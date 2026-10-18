@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generates clean, synthesized PCM WAV sound effects for «Παντομιμα»:
+Generates clean, synthesized PCM WAV sound effects for «Παντομίμα»:
 - correct.wav: Cheerful two-tone chime (major third / fifth)
 - pass.wav: Soft muted click / neutral chime
 - tick.wav: Crisp countdown tick click

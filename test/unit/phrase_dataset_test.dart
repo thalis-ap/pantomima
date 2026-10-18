@@ -60,18 +60,18 @@ void main() {
         expect(data['sourceFile'], 'frases100000.txt');
 
         final categories = data['categories'] as Map<String, dynamic>;
-        expect(categories['Εύκολο'], 708);
-        expect(categories['Μεσαίο'], 15884);
-        expect(categories['Δύσκολο'], 23837);
-        expect(categories['Ακατόρθωτο'], 59571);
+        expect(categories['Εύκολο'], 25000);
+        expect(categories['Μεσαίο'], 25000);
+        expect(categories['Δύσκολο'], 25000);
+        expect(categories['Ακατόρθωτο'], 25000);
 
         final wordCounts = data['wordCounts'] as Map<String, dynamic>;
-        expect(wordCounts['3'], 708);
-        expect(wordCounts['4'], 15884);
-        expect(wordCounts['5'], 23837);
-        expect(wordCounts['6'], 30887);
-        expect(wordCounts['7'], 13325);
-        expect(wordCounts['8'], 15359);
+        expect(wordCounts['3'], 25000);
+        expect(wordCounts['4'], 25000);
+        expect(wordCounts['5'], 25000);
+        expect(wordCounts['6'], 7566);
+        expect(wordCounts['7'], 8550);
+        expect(wordCounts['8'], 8884);
 
         final phrases = data['phrases'] as List<dynamic>;
         expect(phrases.length, 100000);

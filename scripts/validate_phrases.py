@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Comprehensive Greek Pantomime Phrase Validator for «Παντομιμα» (100,000-Phrase Dataset)
+Comprehensive Greek Pantomime Phrase Validator for «Παντομίμα» (100,000-Phrase Dataset)
 
 Validates:
 1. Total number of phrases (exactly 100,000)

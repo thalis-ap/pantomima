@@ -116,8 +116,8 @@ void main() {
       await tester.tap(find.text(GreekStrings.roundsOption10));
       await tester.pumpAndSettle();
 
-      // Select 45s duration
-      await tester.tap(find.text('45 ${GreekStrings.seconds}'));
+      // Select 180s duration
+      await tester.tap(find.text('180 ${GreekStrings.seconds}'));
       await tester.pumpAndSettle();
 
       // Start game
@@ -126,7 +126,7 @@ void main() {
 
       expect(startedConfig, isNotNull);
       expect(startedConfig!.totalRounds, 10);
-      expect(startedConfig!.roundDurationSeconds, 45);
+      expect(startedConfig!.roundDurationSeconds, 180);
     });
     testWidgets('Defaults to 60 seconds when unmodified', (tester) async {
       tester.view.physicalSize = const Size(1080, 2400);

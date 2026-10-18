@@ -36,8 +36,8 @@ void main() {
         expect(find.text(GreekStrings.addTeam), findsNothing);
         expect(find.text(GreekStrings.teamNameHint), findsNothing);
 
-        // Configure duration to 90 seconds
-        await tester.tap(find.text('90 ${GreekStrings.seconds}'));
+        // Configure duration to 180 seconds (180 δευτ.)
+        await tester.tap(find.text('180 ${GreekStrings.seconds}'));
         await tester.pumpAndSettle();
 
         // Start free play
@@ -47,7 +47,7 @@ void main() {
         expect(startedConfig, isNotNull);
         expect(startedConfig!.mode, GameMode.freePlay);
         expect(startedConfig!.teams, isEmpty);
-        expect(startedConfig!.roundDurationSeconds, 90);
+        expect(startedConfig!.roundDurationSeconds, 180);
         expect(
           startedConfig!.allowedDifficulties.contains(DifficultyCategory.easy),
           isTrue,
