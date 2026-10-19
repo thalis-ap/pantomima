@@ -20,7 +20,7 @@ class PhraseCard extends StatelessWidget {
     this.isStreakBonusEnabled = true,
   });
 
-  static const double kDifficultyRowHeight = 50.0;
+  static const double kDifficultyRowHeight = 52.0;
 
   @override
   Widget build(BuildContext context) {
@@ -96,35 +96,68 @@ class PhraseCard extends StatelessWidget {
                         ),
                       )
                     : Column(
-                        key: ValueKey(phrase?.id ?? 'empty'),
+                        key: const ValueKey('playing'),
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           if (phrase != null) ...[
-                            // 1. Fixed-height top row: Difficulty
+                            // 1. Fixed-height top row: Difficulty on top-left, Streak on top-right
                             SizedBox(
                               height: kDifficultyRowHeight,
-                              child: Center(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 18,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: diffColor.withValues(alpha: 0.18),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: diffColor,
-                                      width: 1.5,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // Top-left: Difficulty badge (visibly larger and wider than streak)
+                                    Flexible(
+                                      child: Container(
+                                        key: const ValueKey('difficulty_card'),
+                                        constraints: const BoxConstraints(
+                                          minHeight: 34,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 14,
+                                          vertical: 7,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: diffColor.withValues(
+                                            alpha: 0.18,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          border: Border.all(
+                                            color: diffColor,
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            '${phrase!.difficulty.nameEl} • +${phrase!.difficulty.points} π.',
+                                            maxLines: 1,
+                                            softWrap: false,
+                                            style: TextStyle(
+                                              color: diffColor,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w800,
+                                              letterSpacing: 0.2,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  child: Text(
-                                    '${phrase!.difficulty.nameEl} • +${phrase!.difficulty.points} π.',
-                                    style: TextStyle(
-                                      color: diffColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
+                                    // Top-right: Streak indicator within same row (compact)
+                                    if (showStreak) ...[
+                                      const SizedBox(width: 8),
+                                      _buildStreakPill(),
+                                    ],
+                                  ],
                                 ),
                               ),
                             ),
@@ -240,9 +273,6 @@ class PhraseCard extends StatelessWidget {
                         ],
                       ),
               ),
-              // Top-right streak indicator pill
-              if (showStreak)
-                Positioned(top: 8, right: 12, child: _buildStreakPill()),
             ],
           ),
         ),

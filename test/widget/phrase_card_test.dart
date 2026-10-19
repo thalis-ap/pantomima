@@ -336,5 +336,133 @@ void main() {
         expect(tester.takeException(), isNull);
       },
     );
+
+    testWidgets(
+      'Difficulty badge is at top-left and streak is at top-right without overlap in top row',
+      (tester) async {
+        tester.view.physicalSize = const Size(360, 640);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: PhraseCard(
+                phrase: testPhrase,
+                streak: 4,
+                isStreakBonusEnabled: true,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final cardFinder = find.byType(PhraseCard);
+        final cardRect = tester.getRect(cardFinder);
+
+        final diffFinder = find.text(
+          '${testPhrase.difficulty.nameEl} • +${testPhrase.difficulty.points} π.',
+        );
+        final streakFinder = find.byKey(const ValueKey('streak_indicator'));
+
+        final diffRect = tester.getRect(diffFinder);
+        final streakRect = tester.getRect(streakFinder);
+
+        // Both inside top row
+        expect(
+          diffRect.top - cardRect.top,
+          lessThanOrEqualTo(PhraseCard.kDifficultyRowHeight),
+        );
+        expect(
+          streakRect.top - cardRect.top,
+          lessThanOrEqualTo(PhraseCard.kDifficultyRowHeight),
+        );
+
+        // Difficulty is on the left side of the card
+        expect(diffRect.center.dx, lessThan(cardRect.center.dx));
+
+        // Streak is on the right side of the card
+        expect(streakRect.center.dx, greaterThan(cardRect.center.dx));
+
+        // Verify no overlap: difficulty right edge is to the left of streak left edge
+        expect(diffRect.right, lessThan(streakRect.left));
+
+        // Verify vertical alignment in same row
+        expect(diffRect.center.dy, closeTo(streakRect.center.dy, 4.0));
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'Difficulty card is visibly larger and wider than streak card and never clips points on narrow screens',
+      (tester) async {
+        // Test on narrow phone screen (320px width)
+        tester.view.physicalSize = const Size(320, 600);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+
+        const impossiblePhrase = Phrase(
+          id: 'p_impossible',
+          text: 'Μια πάρα πολύ δύσκολη φράση για παντομίμα',
+          difficulty: DifficultyCategory.impossible,
+          wordCount: 7,
+          isNonsense: false,
+        );
+
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: PhraseCard(
+                phrase: impossiblePhrase,
+                streak: 5,
+                isStreakBonusEnabled: true,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final diffCardFinder = find.byKey(const ValueKey('difficulty_card'));
+        final streakFinder = find.byKey(const ValueKey('streak_indicator'));
+
+        expect(diffCardFinder, findsOneWidget);
+        expect(streakFinder, findsOneWidget);
+
+        final diffCardSize = tester.getSize(diffCardFinder);
+        final streakSize = tester.getSize(streakFinder);
+
+        // Difficulty card must be visibly wider and larger than streak card
+        expect(
+          diffCardSize.width,
+          greaterThan(streakSize.width * 1.3),
+          reason:
+              'Difficulty card should be visibly wider than the compact streak card',
+        );
+        expect(
+          diffCardSize.height,
+          greaterThanOrEqualTo(streakSize.height),
+          reason: 'Difficulty card should not be shorter than streak card',
+        );
+
+        // Verify points label and number are rendered
+        expect(find.text('Ακατόρθωτο • +5 π.'), findsOneWidget);
+
+        final diffCardRect = tester.getRect(diffCardFinder);
+        final streakRect = tester.getRect(streakFinder);
+
+        // Verify top-left vs top-right alignment
+        expect(diffCardRect.left, lessThan(streakRect.left));
+        expect(diffCardRect.right, lessThan(streakRect.left));
+
+        // Zero exceptions / zero render overflows
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

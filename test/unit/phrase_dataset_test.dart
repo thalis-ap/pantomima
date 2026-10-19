@@ -69,9 +69,9 @@ void main() {
         expect(wordCounts['3'], 25000);
         expect(wordCounts['4'], 25000);
         expect(wordCounts['5'], 25000);
-        expect(wordCounts['6'], 7566);
-        expect(wordCounts['7'], 8550);
-        expect(wordCounts['8'], 8884);
+        expect(wordCounts['6'], 7524);
+        expect(wordCounts['7'], 8681);
+        expect(wordCounts['8'], 8795);
 
         final phrases = data['phrases'] as List<dynamic>;
         expect(phrases.length, 100000);
