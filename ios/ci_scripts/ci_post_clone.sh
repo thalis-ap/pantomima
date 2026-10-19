@@ -3,7 +3,6 @@
 set -e
 
 # 1. navigate to the root of the repository immediately
-# This fixes the "pubspec.yaml not found" error
 cd $CI_PRIMARY_REPOSITORY_PATH
 
 echo "📍 Current Directory: $(pwd)"
@@ -27,14 +26,22 @@ flutter precache --ios
 echo "📦 Running Flutter Pub Get..."
 flutter pub get
 
-# 4. Install Pods
-echo "🍎 Installing Pods..."
+# 4. Install Pods ONLY if Podfile exists
+echo "🍎 Checking for Podfile..."
 cd ios
-rm -rf Pods Podfile.lock
-pod repo update
-pod install
+if [ -f "Podfile" ]; then
+  echo "Podfile found. Installing pods..."
+  rm -rf Pods Podfile.lock
+  pod repo update
+  pod install
+else
+  echo "No Podfile found. Skipping pod install."
+fi
 
 cd ..
-flutter build ios --release --no-codesign
+
+# 5. Prep iOS files without doing a full build
+echo "⚙️ Configuring iOS build..."
+flutter build ios --config-only
 
 echo "✅ ci_post_clone.sh script finished successfully."
