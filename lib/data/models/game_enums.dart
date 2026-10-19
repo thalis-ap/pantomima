@@ -67,6 +67,18 @@ enum DifficultyCategory {
         return DifficultyCategory.medium;
     }
   }
+
+  static DifficultyCategory fromWordCount(int wordCount) {
+    if (wordCount <= 3) {
+      return DifficultyCategory.easy;
+    } else if (wordCount == 4) {
+      return DifficultyCategory.medium;
+    } else if (wordCount == 5) {
+      return DifficultyCategory.hard;
+    } else {
+      return DifficultyCategory.impossible;
+    }
+  }
 }
 
 /// Mode of play

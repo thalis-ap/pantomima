@@ -394,5 +394,187 @@ void main() {
       streakController.finishGame();
       await tester.pumpAndSettle();
     });
+
+    testWidgets('2x2 grid layout of action controls and round reset behavior', (
+      tester,
+    ) async {
+      final resetController = GameController(phraseRepository: repository);
+      resetController.setupGame(
+        const GameConfiguration(
+          mode: GameMode.team,
+          teams: [
+            Team(id: 't1', name: 'Ομάδα 1', score: 0, color: Colors.purple),
+          ],
+          roundDurationSeconds: 120,
+        ),
+      );
+      addTearDown(resetController.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: GameScreen(controller: resetController, onExit: () {}),
+        ),
+      );
+
+      // Start round
+      await tester.tap(find.text('Έναρξη Γύρου'));
+      await tester.pump();
+
+      // 1. Verify 2x2 grid exists
+      final passFinder = find.text(GreekStrings.pass);
+      final correctFinder = find.text(GreekStrings.correct);
+      final pauseFinder = find.text(GreekStrings.pause);
+      final resetFinder = find.text(GreekStrings.resetRound);
+
+      expect(passFinder, findsOneWidget);
+      expect(correctFinder, findsOneWidget);
+      expect(pauseFinder, findsOneWidget);
+      expect(resetFinder, findsOneWidget);
+
+      final passPos = tester.getCenter(passFinder);
+      final correctPos = tester.getCenter(correctFinder);
+      final pausePos = tester.getCenter(pauseFinder);
+      final resetPos = tester.getCenter(resetFinder);
+
+      // Row 1: Pass on left, Correct on right
+      expect(passPos.dy, closeTo(correctPos.dy, 2.0));
+      expect(passPos.dx, lessThan(correctPos.dx));
+
+      // Row 2: Pause on left, Reset on right
+      expect(pausePos.dy, closeTo(resetPos.dy, 2.0));
+      expect(pausePos.dx, lessThan(resetPos.dx));
+
+      // Row 1 is above Row 2
+      expect(passPos.dy, lessThan(pausePos.dy));
+
+      // 2. Score 1 point
+      await tester.tap(correctFinder);
+      await tester.pump();
+      expect(find.text('${GreekStrings.scoreLabel} 1'), findsOneWidget);
+
+      // 3. Tap Reset button -> opens confirmation dialog
+      await tester.tap(resetFinder);
+      await tester.pumpAndSettle();
+
+      final dialogFinder = find.byType(AlertDialog);
+      expect(dialogFinder, findsOneWidget);
+      expect(
+        find.descendant(
+          of: dialogFinder,
+          matching: find.text(GreekStrings.resetRoundTitle),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: dialogFinder,
+          matching: find.text(GreekStrings.resetRoundMessage),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: dialogFinder,
+          matching: find.text(GreekStrings.cancel),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: dialogFinder,
+          matching: find.text(GreekStrings.resetRoundConfirm),
+        ),
+        findsOneWidget,
+      );
+
+      // Cancel dialog -> leaves round unchanged
+      await tester.tap(
+        find.descendant(
+          of: dialogFinder,
+          matching: find.text(GreekStrings.cancel),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AlertDialog), findsNothing);
+      expect(find.text('${GreekStrings.scoreLabel} 1'), findsOneWidget);
+
+      // Tap Reset again -> confirm reset
+      await tester.tap(resetFinder);
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text(GreekStrings.resetRoundConfirm),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Dialog closed and countdown reset to 120s (02:00)
+      expect(find.text(GreekStrings.resetRoundTitle), findsNothing);
+      expect(find.text('02:00'), findsOneWidget);
+      // Round score reset
+      expect(find.text('${GreekStrings.scoreLabel} 0'), findsOneWidget);
+
+      resetController.finishGame();
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets(
+      'Pre-game Back navigation returns to previous screen without exit confirmation',
+      (tester) async {
+        final backController = GameController(phraseRepository: repository);
+        backController.setupGame(
+          const GameConfiguration(
+            mode: GameMode.team,
+            teams: [
+              Team(id: 't1', name: 'Ομάδα 1', score: 0, color: Colors.purple),
+            ],
+            roundDurationSeconds: 60,
+          ),
+        );
+        addTearDown(backController.dispose);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) => Scaffold(
+                body: Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => GameScreen(
+                            controller: backController,
+                            onExit: () {},
+                          ),
+                        ),
+                      );
+                    },
+                    child: const Text('GoToGame'),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        // Push game screen
+        await tester.tap(find.text('GoToGame'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Έναρξη Γύρου'), findsOneWidget);
+
+        // Press toolbar back arrow
+        await tester.tap(find.byIcon(Icons.arrow_back_ios_new_rounded));
+        await tester.pumpAndSettle();
+
+        // Verify returned to previous screen without exit confirmation dialog
+        expect(find.text(GreekStrings.exitConfirmationTitle), findsNothing);
+        expect(find.text('GoToGame'), findsOneWidget);
+      },
+    );
   });
 }

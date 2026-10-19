@@ -135,12 +135,7 @@ def process_phrases(
             category_scores[cat_name].append(diff_score)
 
             phrase_entry = {
-                "id": f"p_{phrase_id_counter:06d}",
                 "text": phrase_text,
-                "category": cat_name,
-                "wordCount": wc,
-                "difficultyScore": diff_score,
-                "isNonsense": False,
             }
             all_phrases.append(phrase_entry)
             phrase_id_counter += 1
@@ -148,7 +143,7 @@ def process_phrases(
     # Prepare JSON dataset matching Flutter's schema
     dataset = {
         "version": "3.0.0",
-        "description": "Authentic Greek pantomime phrases dataset sourced from frases100000.txt with semantic scoring.",
+        "description": "Authentic Greek pantomime phrases dataset sourced from frases100000.txt.",
         "sourceFile": os.path.basename(input_path),
         "totalPhrases": total_valid,
         "categories": {
@@ -224,7 +219,9 @@ def process_phrases(
 
 def main():
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    default_input = os.path.join(repo_root, "frases100000.txt")
+    default_input = os.path.join(repo_root, "phraseis_creator", "frases100000.txt")
+    if not os.path.exists(default_input):
+        default_input = os.path.join(repo_root, "frases100000.txt")
     default_output = os.path.join(repo_root, "assets", "data", "phrases_el.json")
 
     parser = argparse.ArgumentParser(

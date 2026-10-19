@@ -235,9 +235,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: [30, 45, 60, 90, 120, 180].map((sec) {
+                    children: StorageService.availableDurations.map((sec) {
                       return ChoiceChip(
-                        label: Text('$sec ${GreekStrings.seconds}'),
+                        label: Text(StorageService.formatDuration(sec)),
                         selected: _defaultDuration == sec,
                         onSelected: (val) {
                           if (val) _onDurationSelect(sec);

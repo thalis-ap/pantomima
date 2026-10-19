@@ -60,11 +60,22 @@ class StorageService {
   }
 
   static const int kDefaultRoundDurationSeconds = 60;
-  static const List<int> availableDurations = [30, 45, 60, 90, 120, 180];
+  static const List<int> availableDurations = [60, 120, 180, 300];
 
-  /// Returns localized duration label (e.g. '180 δευτ.' for 180, '60 δευτ.' for 60)
+  /// Returns localized duration label
   static String formatDuration(int seconds) {
-    return '$seconds ${GreekStrings.seconds}';
+    switch (seconds) {
+      case 60:
+        return GreekStrings.duration1Min;
+      case 120:
+        return GreekStrings.duration2Min;
+      case 180:
+        return GreekStrings.duration3Min;
+      case 300:
+        return GreekStrings.duration5Min;
+      default:
+        return '$seconds ${GreekStrings.seconds}';
+    }
   }
 
   int get defaultRoundDuration {

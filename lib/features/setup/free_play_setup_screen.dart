@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/localization/greek_strings.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/positive_int_validator.dart';
 import '../../data/models/game_configuration.dart';
 import '../../data/models/game_enums.dart';
 import '../../shared/widgets/glass_card.dart';
@@ -22,7 +24,19 @@ class FreePlaySetupScreen extends StatefulWidget {
 }
 
 class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
+  static const List<int> _standardDurations = [60, 120, 180, 300];
+  static const Map<int, String> _standardDurationLabels = {
+    60: GreekStrings.duration1Min,
+    120: GreekStrings.duration2Min,
+    180: GreekStrings.duration3Min,
+    300: GreekStrings.duration5Min,
+  };
+
   late int _selectedDuration;
+  bool _isCustomDuration = false;
+  late TextEditingController _customDurationController;
+  String? _durationValidationError;
+
   final Set<DifficultyCategory> _selectedDifficulties = {
     DifficultyCategory.easy,
     DifficultyCategory.medium,
@@ -34,7 +48,42 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedDuration = widget.initialDuration;
+    if (_standardDurations.contains(widget.initialDuration)) {
+      _selectedDuration = widget.initialDuration;
+      _isCustomDuration = false;
+      _customDurationController = TextEditingController(text: '45');
+    } else if (widget.initialDuration > 0) {
+      _selectedDuration = widget.initialDuration;
+      _isCustomDuration = true;
+      _customDurationController = TextEditingController(
+        text: widget.initialDuration.toString(),
+      );
+    } else {
+      _selectedDuration = 60;
+      _isCustomDuration = false;
+      _customDurationController = TextEditingController(text: '45');
+    }
+  }
+
+  @override
+  void dispose() {
+    _customDurationController.dispose();
+    super.dispose();
+  }
+
+  bool get _isFormValid {
+    if (_selectedDifficulties.isEmpty) return false;
+    if (_isCustomDuration) {
+      final res = PositiveIntValidator.validate(
+        _customDurationController.text,
+        emptyOrInvalidError: GreekStrings.invalidDurationError,
+        overflowError: GreekStrings.durationOverflowError,
+        min: 1,
+        max: 600,
+      );
+      if (!res.isValid) return false;
+    }
+    return true;
   }
 
   void _validateAndStart() {
@@ -45,10 +94,29 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
       return;
     }
 
+    int finalDuration = _selectedDuration;
+    if (_isCustomDuration) {
+      final res = PositiveIntValidator.validate(
+        _customDurationController.text,
+        emptyOrInvalidError: GreekStrings.invalidDurationError,
+        overflowError: GreekStrings.durationOverflowError,
+        min: 1,
+        max: 600,
+      );
+      if (!res.isValid) {
+        setState(() {
+          _durationValidationError = res.errorMessage;
+          _validationError = res.errorMessage;
+        });
+        return;
+      }
+      finalDuration = res.value!;
+    }
+
     final config = GameConfiguration(
       mode: GameMode.freePlay,
       teams: const [],
-      roundDurationSeconds: _selectedDuration,
+      roundDurationSeconds: finalDuration,
       allowedDifficulties: _selectedDifficulties,
     );
 
@@ -104,7 +172,7 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Duration Section (Explicit presets: 30, 45, 60, 90, 120, 180s)
+              // Duration Section (Standard choices: 1m, 2m, 3m, 5m, custom)
               const Text(
                 GreekStrings.roundDuration,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -113,16 +181,113 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: [30, 45, 60, 90, 120, 180].map((dur) {
-                  return ChoiceChip(
-                    label: Text('$dur ${GreekStrings.seconds}'),
-                    selected: _selectedDuration == dur,
+                children: [
+                  ..._standardDurations.map((dur) {
+                    final isSelected =
+                        !_isCustomDuration && _selectedDuration == dur;
+                    return ChoiceChip(
+                      label: Text(_standardDurationLabels[dur]!),
+                      selected: isSelected,
+                      onSelected: (val) {
+                        if (val) {
+                          setState(() {
+                            _isCustomDuration = false;
+                            _selectedDuration = dur;
+                            _durationValidationError = null;
+                            _validationError = null;
+                          });
+                        }
+                      },
+                    );
+                  }),
+                  ChoiceChip(
+                    label: const Text(GreekStrings.durationCustom),
+                    selected: _isCustomDuration,
                     onSelected: (val) {
-                      if (val) setState(() => _selectedDuration = dur);
+                      if (val) {
+                        setState(() {
+                          _isCustomDuration = true;
+                          final res = PositiveIntValidator.validate(
+                            _customDurationController.text,
+                            emptyOrInvalidError:
+                                GreekStrings.invalidDurationError,
+                            overflowError: GreekStrings.durationOverflowError,
+                            min: 1,
+                            max: 600,
+                          );
+                          if (res.isValid) {
+                            _selectedDuration = res.value!;
+                            _durationValidationError = null;
+                          } else {
+                            _durationValidationError = res.errorMessage;
+                          }
+                        });
+                      }
                     },
-                  );
-                }).toList(),
+                  ),
+                ],
               ),
+              if (_isCustomDuration) ...[
+                const SizedBox(height: 10),
+                GlassCard(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.timer_outlined, size: 20),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: _customDurationController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          decoration: const InputDecoration(
+                            hintText: GreekStrings.customDurationHint,
+                            suffixText: GreekStrings.customDurationUnit,
+                            border: InputBorder.none,
+                            isDense: true,
+                          ),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          onChanged: (val) {
+                            final res = PositiveIntValidator.validate(
+                              val,
+                              emptyOrInvalidError:
+                                  GreekStrings.invalidDurationError,
+                              overflowError: GreekStrings.durationOverflowError,
+                              min: 1,
+                              max: 600,
+                            );
+                            setState(() {
+                              if (res.isValid) {
+                                _selectedDuration = res.value!;
+                                _durationValidationError = null;
+                                _validationError = null;
+                              } else {
+                                _durationValidationError = res.errorMessage;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (_durationValidationError != null) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    _durationValidationError!,
+                    style: const TextStyle(
+                      color: AppColors.alertRed,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ],
               const SizedBox(height: 24),
 
               // Difficulty Selection with Point Indicators
@@ -208,7 +373,7 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                onPressed: _validateAndStart,
+                onPressed: _isFormValid ? _validateAndStart : null,
               ),
               const SizedBox(height: 20),
             ],

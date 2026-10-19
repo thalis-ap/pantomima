@@ -75,6 +75,62 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
     setState(() {});
   }
 
+  bool _isResetting = false;
+
+  bool get _isPreGame => widget.controller.state.phase == GamePhase.ready;
+
+  void _handleBack() {
+    if (_isPreGame && Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      _confirmExit();
+    }
+  }
+
+  void _confirmResetRound() {
+    if (_isResetting) return;
+    final wasRunning = widget.controller.phase == GamePhase.running;
+    if (wasRunning) {
+      widget.controller.pauseRound();
+    }
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text(GreekStrings.resetRoundTitle),
+          content: const Text(GreekStrings.resetRoundMessage),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                if (wasRunning) {
+                  widget.controller.resumeRound();
+                }
+              },
+              child: const Text(GreekStrings.cancel),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryPurple,
+              ),
+              onPressed: () {
+                _isResetting = true;
+                Navigator.pop(ctx);
+                widget.controller.resetRound();
+                _isResetting = false;
+              },
+              child: const Text(
+                GreekStrings.resetRoundConfirm,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _confirmExit() {
     final wasRunning = widget.controller.phase == GamePhase.running;
     if (wasRunning) {
@@ -227,8 +283,10 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
       }
     }
 
+    final canDirectPop = _isPreGame && Navigator.canPop(context);
+
     return PopScope(
-      canPop: false,
+      canPop: canDirectPop,
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) _confirmExit();
       },
@@ -236,8 +294,8 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
-            tooltip: GreekStrings.exitGame,
-            onPressed: _confirmExit,
+            tooltip: _isPreGame ? GreekStrings.back : GreekStrings.exitGame,
+            onPressed: _handleBack,
           ),
           title: Text(
             isTeamMode
@@ -493,58 +551,98 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
   Widget _buildActionControls(GameState state, bool isTeamMode) {
     switch (state.phase) {
       case GamePhase.ready:
-        return GreekButton(
-          text: GreekStrings.startRound,
-          icon: Icons.play_arrow_rounded,
-          gradient: AppColors.primaryGradient,
-          onPressed: () => widget.controller.startRound(),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GreekButton(
+              text: GreekStrings.startRound,
+              icon: Icons.play_arrow_rounded,
+              gradient: AppColors.primaryGradient,
+              onPressed: () => widget.controller.startRound(),
+            ),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: _handleBack,
+              icon: const Icon(Icons.arrow_back_rounded, size: 20),
+              label: const Text(GreekStrings.back),
+            ),
+          ],
         );
 
       case GamePhase.running:
+      case GamePhase.paused:
+        final isPaused = state.phase == GamePhase.paused;
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
+            // Row 1: Πάσο (top-left) and Σωστό (top-right)
             Row(
               children: [
-                // Pass button
                 Expanded(
                   child: GreekButton(
                     text: GreekStrings.pass,
                     icon: Icons.skip_next_rounded,
                     gradient: AppColors.passGradient,
                     semanticLabel: GreekStrings.passButtonSemantic,
-                    onPressed: () => widget.controller.markPass(),
+                    height: 52,
+                    fontSize: 16,
+                    onPressed: isPaused
+                        ? null
+                        : () => widget.controller.markPass(),
                   ),
                 ),
-                const SizedBox(width: 14),
-                // Correct button
+                const SizedBox(width: 12),
                 Expanded(
                   child: GreekButton(
                     text: GreekStrings.correct,
                     icon: Icons.check_circle_rounded,
                     gradient: AppColors.successGradient,
                     semanticLabel: GreekStrings.correctButtonSemantic,
-                    onPressed: () => widget.controller.markCorrect(),
+                    height: 52,
+                    fontSize: 16,
+                    onPressed: isPaused
+                        ? null
+                        : () => widget.controller.markCorrect(),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 10),
-            // Pause button
-            TextButton.icon(
-              onPressed: () => widget.controller.pauseRound(),
-              icon: const Icon(Icons.pause_rounded, size: 20),
-              label: const Text(GreekStrings.pause),
+            // Row 2: Παύση/Συνέχεια (bottom-left) and Επαναφορά (bottom-right)
+            Row(
+              children: [
+                Expanded(
+                  child: GreekButton(
+                    text: isPaused ? GreekStrings.resume : GreekStrings.pause,
+                    icon: isPaused
+                        ? Icons.play_arrow_rounded
+                        : Icons.pause_rounded,
+                    gradient: AppColors.primaryGradient,
+                    semanticLabel: isPaused
+                        ? GreekStrings.resumeButtonSemantic
+                        : GreekStrings.pause,
+                    height: 52,
+                    fontSize: 16,
+                    onPressed: isPaused
+                        ? () => widget.controller.resumeRound()
+                        : () => widget.controller.pauseRound(),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GreekButton(
+                    text: GreekStrings.resetRound,
+                    icon: Icons.replay_rounded,
+                    backgroundColor: const Color(0xFF6750A4),
+                    semanticLabel: GreekStrings.resetRoundTitle,
+                    height: 52,
+                    fontSize: 16,
+                    onPressed: _confirmResetRound,
+                  ),
+                ),
+              ],
             ),
           ],
-        );
-
-      case GamePhase.paused:
-        return GreekButton(
-          text: GreekStrings.resume,
-          icon: Icons.play_arrow_rounded,
-          gradient: AppColors.primaryGradient,
-          semanticLabel: GreekStrings.resumeButtonSemantic,
-          onPressed: () => widget.controller.resumeRound(),
         );
 
       case GamePhase.roundExpired:

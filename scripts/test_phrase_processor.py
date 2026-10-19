@@ -103,27 +103,13 @@ class TestPhraseProcessing(unittest.TestCase):
             self.assertEqual(len(data["phrases"]), 6)
 
             phrases = data["phrases"]
-            # Verify ordering by word count
-            self.assertEqual(phrases[0]["wordCount"], 3)
-            self.assertEqual(phrases[0]["category"], "Εύκολο")
-            self.assertEqual(phrases[0]["id"], "p_000001")
-            self.assertIn("difficultyScore", phrases[0])
-            self.assertFalse(phrases[0]["isNonsense"])
-
-            self.assertEqual(phrases[1]["wordCount"], 4)
-            self.assertEqual(phrases[1]["category"], "Μεσαίο")
-
-            self.assertEqual(phrases[2]["wordCount"], 5)
-            self.assertEqual(phrases[2]["category"], "Δύσκολο")
-
-            self.assertEqual(phrases[3]["wordCount"], 6)
-            self.assertEqual(phrases[3]["category"], "Ακατόρθωτο")
-
-            self.assertEqual(phrases[4]["wordCount"], 7)
-            self.assertEqual(phrases[4]["category"], "Ακατόρθωτο")
-
-            self.assertEqual(phrases[5]["wordCount"], 8)
-            self.assertEqual(phrases[5]["category"], "Ακατόρθωτο")
+            # Verify ordering by word count and texts
+            self.assertEqual(phrases[0]["text"], "Ο σκύλος γαβγίζει")
+            self.assertEqual(phrases[1]["text"], "Η   γιαγιά   φτιάχνει   κουλουράκια")
+            self.assertEqual(phrases[2]["text"], "Ο παππούς χορεύει στο τραπέζι")
+            self.assertEqual(phrases[3]["text"], "Ο μάγειρας ψήνει κρέας στην ταβέρνα")
+            self.assertEqual(phrases[4]["text"], "Ο μάγειρας ψήνει το κρέας στην ταβέρνα")
+            self.assertEqual(phrases[5]["text"], "Ένας αστροναύτης προσπαθεί να φάει καρπούζι χωρίς βαρύτητα")
 
         finally:
             if os.path.exists(in_path):

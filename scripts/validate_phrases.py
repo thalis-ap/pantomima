@@ -93,98 +93,90 @@ def validate(
                     source_phrases.add(sline_trimmed)
 
     for idx, p in enumerate(phrases):
-        p_id = p.get("id")
         text = p.get("text")
-        cat = p.get("category")
+        p_id = p.get("id", f"p_{idx+1:06d}")
         wc = p.get("wordCount")
-        is_nonsense = p.get("isNonsense")
+        cat = p.get("category")
         diff_score = p.get("difficultyScore")
+        is_nonsense = p.get("isNonsense")
 
-        # Required fields check
-        if not p_id or not text or cat is None or wc is None or is_nonsense is None:
-            errors.append(f"Phrase #{idx} has missing required fields: {p}")
+        # Required field: text
+        if not text or not isinstance(text, str):
+            errors.append(f"Phrase #{idx} has missing or non-string 'text': {p}")
             continue
-
-        # ID format and uniqueness
-        if p_id in seen_ids:
-            errors.append(f"Duplicate phrase ID: {p_id}")
-        seen_ids.add(p_id)
 
         # Nonempty text
         if not text.strip():
-            errors.append(f"Phrase {p_id} has empty text")
+            errors.append(f"Phrase #{idx} has empty text")
             continue
 
         # Greek content
         if not has_greek_characters(text):
-            errors.append(f"Phrase {p_id} does not contain Greek characters: '{text}'")
+            errors.append(f"Phrase #{idx} does not contain Greek characters: '{text}'")
 
         # Source verification (if source text was provided)
         if source_phrases and text not in source_phrases:
             errors.append(
-                f"Phrase {p_id} ('{text}') does not exist in source text file!"
+                f"Phrase #{idx} ('{text}') does not exist in source text file!"
             )
 
         # Normalized uniqueness
         norm_text = normalize_text(text)
         lower_norm = norm_text.lower()
         if lower_norm in seen_texts_lower:
-            errors.append(f"Duplicate phrase text: '{text}' (ID: {p_id})")
+            errors.append(f"Duplicate phrase text: '{text}' (#{idx})")
         seen_texts_lower.add(lower_norm)
 
         # Actual word count
         words = lower_norm.split()
         actual_wc = len(words)
-        if actual_wc != wc:
+        if wc is not None and actual_wc != wc:
             errors.append(
-                f"Phrase {p_id} wordCount field {wc} != actual count {actual_wc} ('{text}')"
+                f"Phrase #{idx} wordCount field {wc} != actual count {actual_wc} ('{text}')"
             )
         actual_wc_counts[actual_wc] += 1
 
-        # Category checks
-        if cat not in category_counts:
-            errors.append(f"Phrase {p_id} has unknown category: {cat}")
-            continue
-        category_counts[cat] += 1
+        # Determine category from word count
+        if actual_wc == 3:
+            derived_cat = "Εύκολο"
+        elif actual_wc == 4:
+            derived_cat = "Μεσαίο"
+        elif actual_wc == 5:
+            derived_cat = "Δύσκολο"
+        elif 6 <= actual_wc <= 8:
+            derived_cat = "Ακατόρθωτο"
+        else:
+            derived_cat = "Unknown"
 
-        # Difficulty score verification
+        if cat is not None and cat != derived_cat:
+            errors.append(f"Phrase #{idx} declared category {cat} != derived category {derived_cat}")
+
+        effective_cat = cat if cat is not None else derived_cat
+        if effective_cat not in category_counts:
+            errors.append(f"Phrase #{idx} has invalid category: {effective_cat}")
+            continue
+        category_counts[effective_cat] += 1
+
+        # Range bounds
+        if actual_wc < 3 or actual_wc > 8:
+            errors.append(
+                f"Phrase #{idx} word count {actual_wc} out of bounds (3-8): '{text}'"
+            )
+
+        # Optional difficulty score verification
         if diff_score is not None:
             if (
                 not isinstance(diff_score, (int, float))
                 or diff_score < 0.0
                 or diff_score > 100.0
             ):
-                errors.append(f"Phrase {p_id} has invalid difficultyScore: {diff_score}")
+                errors.append(f"Phrase #{idx} has invalid difficultyScore: {diff_score}")
             else:
-                category_scores[cat].append(float(diff_score))
+                category_scores[effective_cat].append(float(diff_score))
 
-        # Strict category word count rules
-        if cat == "Εύκολο" and actual_wc != 3:
-            errors.append(
-                f"Phrase {p_id} category 'Εύκολο' has {actual_wc} words, expected exactly 3: '{text}'"
-            )
-        elif cat == "Μεσαίο" and actual_wc != 4:
-            errors.append(
-                f"Phrase {p_id} category 'Μεσαίο' has {actual_wc} words, expected exactly 4: '{text}'"
-            )
-        elif cat == "Δύσκολο" and actual_wc != 5:
-            errors.append(
-                f"Phrase {p_id} category 'Δύσκολο' has {actual_wc} words, expected exactly 5: '{text}'"
-            )
-        elif cat == "Ακατόρθωτο" and not (6 <= actual_wc <= 8):
-            errors.append(
-                f"Phrase {p_id} category 'Ακατόρθωτο' has {actual_wc} words, expected 6-8: '{text}'"
-            )
-
-        # Range bounds
-        if actual_wc < 3 or actual_wc > 8:
-            errors.append(
-                f"Phrase {p_id} word count {actual_wc} out of bounds (3-8): '{text}'"
-            )
-
-        # isNonsense is bool
-        if not isinstance(is_nonsense, bool):
-            errors.append(f"Phrase {p_id} isNonsense is not boolean: {type(is_nonsense)}")
+        # Optional isNonsense check
+        if is_nonsense is not None and not isinstance(is_nonsense, bool):
+            errors.append(f"Phrase #{idx} isNonsense is not boolean: {type(is_nonsense)}")
 
         # Track opening words
         if words:
@@ -195,8 +187,8 @@ def validate(
             opening_words[opener] += 1
 
         # Collect random samples
-        if len(category_samples[cat]) < 100:
-            category_samples[cat].append(norm_text)
+        if len(category_samples[effective_cat]) < 100:
+            category_samples[effective_cat].append(norm_text)
 
     # Check that category totals match declared categories
     for cat_name, c_cnt in category_counts.items():

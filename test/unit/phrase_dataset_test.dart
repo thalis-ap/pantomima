@@ -78,14 +78,20 @@ void main() {
 
         // Verify first and last entries
         final first = phrases.first as Map<String, dynamic>;
-        expect(first['id'], 'p_000001');
-        expect(first['wordCount'], 3);
-        expect(first['category'], 'Εύκολο');
+        expect(first['text'], isNotEmpty);
+        expect(first.containsKey('difficultyScore'), isFalse);
+        expect(first.containsKey('isNonsense'), isFalse);
+        final firstPhrase = Phrase.fromJson(first);
+        expect(firstPhrase.difficulty, DifficultyCategory.easy);
+        expect(firstPhrase.wordCount, 3);
 
         final last = phrases.last as Map<String, dynamic>;
-        expect(last['id'], 'p_100000');
-        expect(last['wordCount'], 8);
-        expect(last['category'], 'Ακατόρθωτο');
+        expect(last['text'], isNotEmpty);
+        expect(last.containsKey('difficultyScore'), isFalse);
+        expect(last.containsKey('isNonsense'), isFalse);
+        final lastPhrase = Phrase.fromJson(last);
+        expect(lastPhrase.difficulty, DifficultyCategory.impossible);
+        expect(lastPhrase.wordCount, 8);
       },
     );
 

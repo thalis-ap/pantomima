@@ -36,8 +36,8 @@ void main() {
         expect(find.text(GreekStrings.addTeam), findsNothing);
         expect(find.text(GreekStrings.teamNameHint), findsNothing);
 
-        // Configure duration to 180 seconds (180 δευτ.)
-        await tester.tap(find.text('180 ${GreekStrings.seconds}'));
+        // Configure duration to 3 minutes (180 seconds)
+        await tester.tap(find.text(GreekStrings.duration3Min));
         await tester.pumpAndSettle();
 
         // Start free play
@@ -117,8 +117,8 @@ void main() {
           ),
         );
 
-        // Select 120 seconds
-        await tester.tap(find.text('120 ${GreekStrings.seconds}'));
+        // Select 2 minutes
+        await tester.tap(find.text(GreekStrings.duration2Min));
         await tester.pumpAndSettle();
 
         // Tap to toggle difficulty

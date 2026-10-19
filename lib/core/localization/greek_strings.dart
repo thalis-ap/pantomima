@@ -9,6 +9,7 @@ class GreekStrings {
       'Το απόλυτο παιχνίδι παρέας με δράση, γέλιο και μαντεψιές!';
   static const String offlineNotice = '100.000 φράσεις • 100% χωρίς ίντερνετ';
   static const String cancel = 'Ακύρωση';
+  static const String back = 'Πίσω';
   static const String confirm = 'Επιβεβαίωση';
   static const String retry = 'Δοκιμάστε ξανά';
   static const String loading = 'Φόρτωση φράσεων...';
@@ -41,6 +42,20 @@ class GreekStrings {
       'Το όνομα ομάδας δεν μπορεί να είναι κενό.';
   static const String roundDuration = 'Διάρκεια Γύρου';
   static const String seconds = 'δευτ.';
+  static const String duration1Min = '1 λεπτό';
+  static const String duration2Min = '2 λεπτά';
+  static const String duration3Min = '3 λεπτά';
+  static const String duration5Min = '5 λεπτά';
+  static const String durationCustom = 'Προσαρμογή';
+  static const String customDurationLabel = 'Διάρκεια σε δευτερόλεπτα';
+  static const String customDurationHint = 'π.χ. 45';
+  static const String customDurationUnit = 'δευτερόλεπτα';
+  static const String invalidDurationError =
+      'Η διάρκεια πρέπει να είναι θετικός ακέραιος (τουλάχιστον 1 δευτ.).';
+  static const String durationOverflowError =
+      'Η μέγιστη διάρκεια είναι 600 δευτερόλεπτα (10 λεπτά).';
+  static const String roundsOverflowError =
+      'Ο μέγιστος αριθμός γύρων είναι 100.';
   static const String difficultySelection = 'Επιλογή Δυσκολίας';
   static const String selectAtLeastOneDifficulty =
       'Επιλέξτε τουλάχιστον μία δυσκολία.';
@@ -55,6 +70,13 @@ class GreekStrings {
   static const String startRound = 'Έναρξη Γύρου';
   static const String preGameInstruction =
       'Βοηθήστε τους συμπαίκτες σας να βρουν όσες περισσότερες φράσεις μπορούν στον διαθέσιμο χρόνο!';
+
+  // Round Reset Dialog
+  static const String resetRound = 'Επαναφορά';
+  static const String resetRoundTitle = 'Επαναφορά γύρου';
+  static const String resetRoundMessage =
+      'Ο χρόνος του τρέχοντος γύρου θα μηδενιστεί και ο γύρος θα ξεκινήσει ξανά. Θέλετε να συνεχίσετε;';
+  static const String resetRoundConfirm = 'Επαναφορά';
 
   // Game Screen
   static const String activeTeamPrefix = 'Σειρά έχει η:';

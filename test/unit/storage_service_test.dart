@@ -34,29 +34,29 @@ void main() {
     );
 
     test('Previously saved fixed duration is preserved', () async {
-      SharedPreferences.setMockInitialValues({'default_round_duration': 90});
+      SharedPreferences.setMockInitialValues({'default_round_duration': 120});
       final storage = await StorageService.create();
-      expect(storage.defaultRoundDuration, 90);
-
-      storage.defaultRoundDuration = 45;
-      expect(storage.defaultRoundDuration, 45);
-
-      storage.defaultRoundDuration = 120;
       expect(storage.defaultRoundDuration, 120);
+
+      storage.defaultRoundDuration = 60;
+      expect(storage.defaultRoundDuration, 60);
 
       storage.defaultRoundDuration = 180;
       expect(storage.defaultRoundDuration, 180);
 
-      storage.defaultRoundDuration = 30;
-      expect(storage.defaultRoundDuration, 30);
+      storage.defaultRoundDuration = 300;
+      expect(storage.defaultRoundDuration, 300);
     });
 
     test(
       '3 minutes (180 seconds) is supported in presets and formatted properly',
       () async {
         expect(StorageService.availableDurations.contains(180), isTrue);
-        expect(StorageService.formatDuration(180), '180 δευτ.');
-        expect(StorageService.formatDuration(60), '60 δευτ.');
+        expect(StorageService.availableDurations.contains(300), isTrue);
+        expect(StorageService.formatDuration(180), '3 λεπτά');
+        expect(StorageService.formatDuration(60), '1 λεπτό');
+        expect(StorageService.formatDuration(120), '2 λεπτά');
+        expect(StorageService.formatDuration(300), '5 λεπτά');
 
         SharedPreferences.setMockInitialValues({'default_round_duration': 180});
         final storage = await StorageService.create();
@@ -65,9 +65,9 @@ void main() {
     );
 
     test('Reset to defaults restores 60 seconds', () async {
-      SharedPreferences.setMockInitialValues({'default_round_duration': 45});
+      SharedPreferences.setMockInitialValues({'default_round_duration': 300});
       final storage = await StorageService.create();
-      expect(storage.defaultRoundDuration, 45);
+      expect(storage.defaultRoundDuration, 300);
 
       await storage.resetToDefaults();
       expect(storage.defaultRoundDuration, 60);

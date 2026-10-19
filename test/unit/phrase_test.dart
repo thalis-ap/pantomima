@@ -29,8 +29,20 @@ void main() {
 
       expect(phrase.id, 'phrase_999999');
       expect(phrase.text, 'Γάτα πίνει γάλα');
-      expect(phrase.difficulty, DifficultyCategory.medium); // Default fallback
+      expect(phrase.difficulty, DifficultyCategory.easy); // 3 words -> Easy
       expect(phrase.wordCount, 3); // Calculated from text
+      expect(phrase.isNonsense, false);
+    });
+
+    test('Parses minimal JSON schema containing only text', () {
+      final json = {'text': 'Ο μάγειρας καίει τηγανίτες'};
+
+      final phrase = Phrase.fromJson(json);
+
+      expect(phrase.text, 'Ο μάγειρας καίει τηγανίτες');
+      expect(phrase.id, 'Ο μάγειρας καίει τηγανίτες');
+      expect(phrase.difficulty, DifficultyCategory.medium); // 4 words -> Medium
+      expect(phrase.wordCount, 4);
       expect(phrase.isNonsense, false);
     });
 

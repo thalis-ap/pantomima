@@ -27,6 +27,7 @@ class GameController extends ChangeNotifier {
   bool _expirationTriggered = false;
   bool _actionLocked = false;
   String? _currentlyScoredPhraseId;
+  int _roundPointsEarned = 0;
 
   GameController({
     required this.phraseRepository,
@@ -59,6 +60,7 @@ class GameController extends ChangeNotifier {
     _actionLocked = false;
     _elapsedBeforePause = 0;
     _currentlyScoredPhraseId = null;
+    _roundPointsEarned = 0;
 
     final initialTeams = config.mode == GameMode.team
         ? config.teams.map((t) => t.copyWith(score: 0, streak: 0)).toList()
@@ -244,6 +246,7 @@ class GameController extends ChangeNotifier {
       bonusAwarded = isEnabled ? StreakCalculator.calculateBonus(newStreak) : 0;
       final basePoints = phraseToScore.difficulty.points;
       final totalPoints = basePoints + bonusAwarded;
+      _roundPointsEarned += totalPoints;
       final updatedTeam = currentTeam.copyWith(
         score: currentTeam.score + totalPoints,
         streak: newStreak,
@@ -339,6 +342,7 @@ class GameController extends ChangeNotifier {
           : _state.currentRound;
 
       final duration = _state.config.roundDurationSeconds;
+      _roundPointsEarned = 0;
 
       _state = _state.copyWith(
         phase: GamePhase.ready,
@@ -429,6 +433,49 @@ class GameController extends ChangeNotifier {
   /// Safely restarts current game
   void restartGame() {
     setupGame(_state.config);
+  }
+
+  /// Resets the current round's countdown to the configured duration and resumes in a fresh playable state
+  void resetRound() {
+    _cancelTimer();
+    _expirationTriggered = false;
+    _actionLocked = false;
+    _elapsedBeforePause = 0;
+    _currentlyScoredPhraseId = null;
+
+    final duration = _state.config.roundDurationSeconds;
+    final nextPhrase = phraseRepository.getRandomPhrase(
+      allowedDifficulties: _state.config.allowedDifficulties,
+      currentPhrase: _state.currentPhrase,
+    );
+
+    List<Team> updatedTeams = _state.teams;
+    if (_state.config.mode == GameMode.team && _state.teams.isNotEmpty) {
+      final activeIdx = _state.currentTeamIndex;
+      final currentTeam = _state.teams[activeIdx];
+      final updatedTeam = currentTeam.copyWith(
+        score: max(0, currentTeam.score - _roundPointsEarned),
+        streak: 0,
+      );
+      updatedTeams = List<Team>.from(_state.teams);
+      updatedTeams[activeIdx] = updatedTeam;
+    }
+    _roundPointsEarned = 0;
+
+    _roundStartedAt = _nowProvider();
+
+    _state = _state.copyWith(
+      phase: GamePhase.running,
+      teams: updatedTeams,
+      currentPhrase: nextPhrase,
+      remainingSeconds: duration,
+      totalDurationSeconds: duration,
+      freePlayStreak: 0,
+      clearLastBonusAwarded: true,
+    );
+
+    _startTimer();
+    notifyListeners();
   }
 
   /// Responds to app backgrounding

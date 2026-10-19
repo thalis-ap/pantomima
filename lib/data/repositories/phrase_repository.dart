@@ -44,9 +44,15 @@ class PhraseRepository {
     }
     _usedPhraseIds.clear();
 
-    for (var item in rawPhrases) {
+    for (int i = 0; i < rawPhrases.length; i++) {
+      final item = rawPhrases[i];
       if (item is Map<String, dynamic>) {
-        final phrase = Phrase.fromJson(item);
+        final phrase = Phrase.fromJson(
+          item,
+          id:
+              item['id'] as String? ??
+              'p_${(i + 1).toString().padLeft(6, '0')}',
+        );
         if (phrase.text.isNotEmpty) {
           _allPhrases.add(phrase);
           _phrasesByCategory[phrase.difficulty]?.add(phrase);

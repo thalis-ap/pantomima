@@ -18,15 +18,22 @@ class Phrase {
     this.difficultyScore,
   });
 
-  factory Phrase.fromJson(Map<String, dynamic> json) {
-    final catName = json['category'] as String? ?? '';
+  factory Phrase.fromJson(Map<String, dynamic> json, {String? id}) {
+    final text = json['text'] as String? ?? '';
+    final resolvedId = id ?? (json['id'] as String?) ?? text;
+    final wordCount =
+        json['wordCount'] as int? ??
+        (text.trim().isEmpty ? 0 : text.trim().split(RegExp(r'\s+')).length);
+    final catName = json['category'] as String?;
+    final difficulty = (catName != null && catName.isNotEmpty)
+        ? DifficultyCategory.fromGreekName(catName)
+        : DifficultyCategory.fromWordCount(wordCount);
+
     return Phrase(
-      id: json['id'] as String? ?? '',
-      text: json['text'] as String? ?? '',
-      difficulty: DifficultyCategory.fromGreekName(catName),
-      wordCount:
-          json['wordCount'] as int? ??
-          (json['text'] as String? ?? '').split(' ').length,
+      id: resolvedId,
+      text: text,
+      difficulty: difficulty,
+      wordCount: wordCount,
       isNonsense: json['isNonsense'] as bool? ?? false,
       difficultyScore: (json['difficultyScore'] as num?)?.toDouble(),
     );

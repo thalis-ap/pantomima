@@ -86,7 +86,7 @@ class _PantomimaAppState extends State<PantomimaApp> {
           initialDuration: widget.storageService.defaultRoundDuration,
           onStartGame: (config) {
             _gameController.setupGame(config);
-            Navigator.pushReplacement(
+            Navigator.push(
               ctx,
               MaterialPageRoute(
                 builder: (_) => GameScreen(
@@ -109,7 +109,7 @@ class _PantomimaAppState extends State<PantomimaApp> {
           initialDuration: widget.storageService.defaultRoundDuration,
           onStartGame: (config) {
             _gameController.setupGame(config);
-            Navigator.pushReplacement(
+            Navigator.push(
               ctx,
               MaterialPageRoute(
                 builder: (_) => GameScreen(

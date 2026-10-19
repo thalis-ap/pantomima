@@ -116,8 +116,8 @@ void main() {
       await tester.tap(find.text(GreekStrings.roundsOption10));
       await tester.pumpAndSettle();
 
-      // Select 180s duration
-      await tester.tap(find.text('180 ${GreekStrings.seconds}'));
+      // Select 3 minutes (180s duration)
+      await tester.tap(find.text(GreekStrings.duration3Min));
       await tester.pumpAndSettle();
 
       // Start game
@@ -173,8 +173,8 @@ void main() {
         ),
       );
 
-      // Select 90 seconds
-      await tester.tap(find.text('90 ${GreekStrings.seconds}'));
+      // Select 2 minutes
+      await tester.tap(find.text(GreekStrings.duration2Min));
       await tester.pumpAndSettle();
 
       // Tap difficulty chip if available
@@ -188,7 +188,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(startedConfig, isNotNull);
-      expect(startedConfig!.roundDurationSeconds, 90);
+      expect(startedConfig!.roundDurationSeconds, 120);
     });
   });
 }

@@ -126,25 +126,23 @@ void main() {
       expect(find.textContaining('δυσκολίας'), findsNothing);
       expect(find.textContaining('Auto'), findsNothing);
 
-      // Verify presets 30, 45, 60, 90, 120, 180 δευτ. are present
-      expect(find.text('30 ${GreekStrings.seconds}'), findsOneWidget);
-      expect(find.text('45 ${GreekStrings.seconds}'), findsOneWidget);
-      expect(find.text('60 ${GreekStrings.seconds}'), findsOneWidget);
-      expect(find.text('90 ${GreekStrings.seconds}'), findsOneWidget);
-      expect(find.text('120 ${GreekStrings.seconds}'), findsOneWidget);
-      expect(find.text('180 ${GreekStrings.seconds}'), findsOneWidget);
+      // Verify presets 1, 2, 3, 5 minutes are present
+      expect(find.text(GreekStrings.duration1Min), findsOneWidget);
+      expect(find.text(GreekStrings.duration2Min), findsOneWidget);
+      expect(find.text(GreekStrings.duration3Min), findsOneWidget);
+      expect(find.text(GreekStrings.duration5Min), findsOneWidget);
 
-      // Select 180 seconds (180 δευτ.)
-      await tester.tap(find.text('180 ${GreekStrings.seconds}'));
+      // Select 3 minutes (180 seconds)
+      await tester.tap(find.text(GreekStrings.duration3Min));
       await tester.pumpAndSettle();
 
       expect(storage.defaultRoundDuration, 180);
 
-      // Select 90 seconds
-      await tester.tap(find.text('90 ${GreekStrings.seconds}'));
+      // Select 5 minutes (300 seconds)
+      await tester.tap(find.text(GreekStrings.duration5Min));
       await tester.pumpAndSettle();
 
-      expect(storage.defaultRoundDuration, 90);
+      expect(storage.defaultRoundDuration, 300);
     });
   });
 }
