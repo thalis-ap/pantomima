@@ -84,17 +84,17 @@ void main() {
 
       // Above max
       final resAboveMax = PositiveIntValidator.validate(
-        '601',
-        max: 600,
+        '3601',
+        max: 3600,
         overflowError: GreekStrings.durationOverflowError,
       );
       expect(resAboveMax.isValid, isFalse);
       expect(resAboveMax.errorMessage, GreekStrings.durationOverflowError);
 
       // Within max
-      final resAtMax = PositiveIntValidator.validate('600', max: 600);
+      final resAtMax = PositiveIntValidator.validate('3600', max: 3600);
       expect(resAtMax.isValid, isTrue);
-      expect(resAtMax.value, 600);
+      expect(resAtMax.value, 3600);
 
       // Below min
       final resBelowMin = PositiveIntValidator.validate('2', min: 3);

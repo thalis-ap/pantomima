@@ -79,7 +79,7 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
         emptyOrInvalidError: GreekStrings.invalidDurationError,
         overflowError: GreekStrings.durationOverflowError,
         min: 1,
-        max: 600,
+        max: 3600,
       );
       if (!res.isValid) return false;
     }
@@ -101,7 +101,7 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
         emptyOrInvalidError: GreekStrings.invalidDurationError,
         overflowError: GreekStrings.durationOverflowError,
         min: 1,
-        max: 600,
+        max: 3600,
       );
       if (!res.isValid) {
         setState(() {
@@ -213,7 +213,7 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
                                 GreekStrings.invalidDurationError,
                             overflowError: GreekStrings.durationOverflowError,
                             min: 1,
-                            max: 600,
+                            max: 3600,
                           );
                           if (res.isValid) {
                             _selectedDuration = res.value!;
@@ -259,7 +259,7 @@ class _FreePlaySetupScreenState extends State<FreePlaySetupScreen> {
                                   GreekStrings.invalidDurationError,
                               overflowError: GreekStrings.durationOverflowError,
                               min: 1,
-                              max: 600,
+                              max: 3600,
                             );
                             setState(() {
                               if (res.isValid) {

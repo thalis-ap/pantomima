@@ -108,7 +108,7 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('Duration presets exist and no automatic timer is exposed', (
+    testWidgets('Default round time setting is removed from SettingsScreen', (
       tester,
     ) async {
       tester.view.physicalSize = const Size(1080, 2400);
@@ -121,28 +121,13 @@ void main() {
         ),
       );
 
-      // Verify NO auto / difficulty-based timer options exist
-      expect(find.textContaining('Αυτόματ'), findsNothing);
-      expect(find.textContaining('δυσκολίας'), findsNothing);
-      expect(find.textContaining('Auto'), findsNothing);
-
-      // Verify presets 1, 2, 3, 5 minutes are present
-      expect(find.text(GreekStrings.duration1Min), findsOneWidget);
-      expect(find.text(GreekStrings.duration2Min), findsOneWidget);
-      expect(find.text(GreekStrings.duration3Min), findsOneWidget);
-      expect(find.text(GreekStrings.duration5Min), findsOneWidget);
-
-      // Select 3 minutes (180 seconds)
-      await tester.tap(find.text(GreekStrings.duration3Min));
-      await tester.pumpAndSettle();
-
-      expect(storage.defaultRoundDuration, 180);
-
-      // Select 5 minutes (300 seconds)
-      await tester.tap(find.text(GreekStrings.duration5Min));
-      await tester.pumpAndSettle();
-
-      expect(storage.defaultRoundDuration, 300);
+      // Verify default round duration setting is not exposed in settings
+      expect(find.text(GreekStrings.defaultTimerSetting), findsNothing);
+      expect(find.text(GreekStrings.roundDuration), findsNothing);
+      expect(find.text(GreekStrings.duration1Min), findsNothing);
+      expect(find.text(GreekStrings.duration2Min), findsNothing);
+      expect(find.text(GreekStrings.duration3Min), findsNothing);
+      expect(find.text(GreekStrings.duration5Min), findsNothing);
     });
   });
 }

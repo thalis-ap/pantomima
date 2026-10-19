@@ -392,14 +392,12 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
 
                   // Central Phrase Card
                   Expanded(
-                    child: Center(
-                      child: PhraseCard(
-                        phrase: state.currentPhrase,
-                        isPaused: state.phase == GamePhase.paused,
-                        streak: state.currentStreak,
-                        isStreakBonusEnabled:
-                            widget.controller.isStreakBonusEnabled,
-                      ),
+                    child: PhraseCard(
+                      phrase: state.currentPhrase,
+                      isPaused: state.phase == GamePhase.paused,
+                      streak: state.currentStreak,
+                      isStreakBonusEnabled:
+                          widget.controller.isStreakBonusEnabled,
                     ),
                   ),
                 ],

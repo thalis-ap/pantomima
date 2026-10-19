@@ -53,7 +53,7 @@ class GreekStrings {
   static const String invalidDurationError =
       'Η διάρκεια πρέπει να είναι θετικός ακέραιος (τουλάχιστον 1 δευτ.).';
   static const String durationOverflowError =
-      'Η μέγιστη διάρκεια είναι 600 δευτερόλεπτα (10 λεπτά).';
+      'Η μέγιστη διάρκεια είναι 3600 δευτερόλεπτα (60 λεπτά).';
   static const String roundsOverflowError =
       'Ο μέγιστος αριθμός γύρων είναι 100.';
   static const String difficultySelection = 'Επιλογή Δυσκολίας';
@@ -137,7 +137,7 @@ class GreekStrings {
       'Θέλετε να επαναφέρετε όλες τις ρυθμίσεις στις αρχικές τους τιμές;';
   static const String resetSuccess = 'Οι ρυθμίσεις επαναφέρθηκαν!';
   static const String about = 'Σχετικά με την εφαρμογή';
-  static const String appVersion = 'Έκδοση 1.0.0';
+  static const String appVersion = 'Έκδοση 1.0.1';
   static const String phrasesTotalLabel =
       '100.000 Πρωτότυπες Ελληνικές Φράσεις';
 

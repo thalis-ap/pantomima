@@ -503,6 +503,9 @@ void main() {
       await tester.tap(resetFinder);
       await tester.pumpAndSettle();
 
+      final phraseBeforeReset = resetController.state.currentPhrase?.text;
+      expect(phraseBeforeReset, isNotNull);
+
       await tester.tap(
         find.descendant(
           of: find.byType(AlertDialog),
@@ -516,6 +519,9 @@ void main() {
       expect(find.text('02:00'), findsOneWidget);
       // Round score reset
       expect(find.text('${GreekStrings.scoreLabel} 0'), findsOneWidget);
+      // Exact same phrase displayed
+      expect(resetController.state.currentPhrase?.text, phraseBeforeReset);
+      expect(find.text(phraseBeforeReset!), findsOneWidget);
 
       resetController.finishGame();
       await tester.pumpAndSettle();

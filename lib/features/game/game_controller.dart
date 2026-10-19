@@ -444,10 +444,11 @@ class GameController extends ChangeNotifier {
     _currentlyScoredPhraseId = null;
 
     final duration = _state.config.roundDurationSeconds;
-    final nextPhrase = phraseRepository.getRandomPhrase(
-      allowedDifficulties: _state.config.allowedDifficulties,
-      currentPhrase: _state.currentPhrase,
-    );
+    final samePhrase =
+        _state.currentPhrase ??
+        phraseRepository.getRandomPhrase(
+          allowedDifficulties: _state.config.allowedDifficulties,
+        );
 
     List<Team> updatedTeams = _state.teams;
     if (_state.config.mode == GameMode.team && _state.teams.isNotEmpty) {
@@ -467,7 +468,7 @@ class GameController extends ChangeNotifier {
     _state = _state.copyWith(
       phase: GamePhase.running,
       teams: updatedTeams,
-      currentPhrase: nextPhrase,
+      currentPhrase: samePhrase,
       remainingSeconds: duration,
       totalDurationSeconds: duration,
       freePlayStreak: 0,

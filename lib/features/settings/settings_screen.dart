@@ -24,7 +24,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late bool _sound;
   late bool _vibration;
   late ThemeMode _themeMode;
-  late int _defaultDuration;
   late bool _streakBonus;
 
   @override
@@ -33,7 +32,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _sound = widget.storage.soundEnabled;
     _vibration = widget.storage.vibrationEnabled;
     _themeMode = widget.storage.themeMode;
-    _defaultDuration = widget.storage.defaultRoundDuration;
     _streakBonus = widget.storage.streakBonusEnabled;
   }
 
@@ -56,11 +54,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _themeMode = mode);
     widget.storage.themeMode = mode;
     widget.onThemeChanged(mode);
-  }
-
-  void _onDurationSelect(int duration) {
-    setState(() => _defaultDuration = duration);
-    widget.storage.defaultRoundDuration = duration;
   }
 
   void _confirmReset() {
@@ -88,7 +81,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _sound = widget.storage.soundEnabled;
                   _vibration = widget.storage.vibrationEnabled;
                   _themeMode = widget.storage.themeMode;
-                  _defaultDuration = widget.storage.defaultRoundDuration;
                   _streakBonus = widget.storage.streakBonusEnabled;
                 });
                 widget.onThemeChanged(_themeMode);
@@ -206,44 +198,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       selected: {_themeMode},
                       onSelectionChanged: (set) => _onThemeSelect(set.first),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Round Duration Default
-            const Text(
-              GreekStrings.defaultTimerSetting,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryViolet,
-              ),
-            ),
-            const SizedBox(height: 10),
-            GlassCard(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    GreekStrings.roundDuration,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: StorageService.availableDurations.map((sec) {
-                      return ChoiceChip(
-                        label: Text(StorageService.formatDuration(sec)),
-                        selected: _defaultDuration == sec,
-                        onSelected: (val) {
-                          if (val) _onDurationSelect(sec);
-                        },
-                      );
-                    }).toList(),
                   ),
                 ],
               ),

@@ -220,5 +220,121 @@ void main() {
       expect(color.a, greaterThanOrEqualTo(0.30));
       expect(color.a, lessThanOrEqualTo(0.45));
     });
+
+    testWidgets(
+      'Difficulty row is inside card top row and stationary between short and long phrases',
+      (tester) async {
+        const shortPhrase = Phrase(
+          id: 'short_1',
+          text: 'Γάτα',
+          difficulty: DifficultyCategory.easy,
+          wordCount: 1,
+          isNonsense: false,
+        );
+
+        const longPhrase = Phrase(
+          id: 'long_1',
+          text:
+              'Ένας αστροναύτης προσπαθεί να φάει καρπούζι χωρίς βαρύτητα μέσα στο διαστημόπλοιο',
+          difficulty: DifficultyCategory.easy,
+          wordCount: 11,
+          isNonsense: false,
+        );
+
+        // 1. Pump short phrase
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: PhraseCard(
+                phrase: shortPhrase,
+                streak: 0,
+                isStreakBonusEnabled: false,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final cardFinder = find.byType(PhraseCard);
+        final cardTop = tester.getTopLeft(cardFinder).dy;
+
+        final diffTextFinderShort = find.text(
+          '${shortPhrase.difficulty.nameEl} • +${shortPhrase.difficulty.points} π.',
+        );
+        final wordCountFinderShort = find.text('1 λέξεις');
+
+        final diffPosShort = tester.getCenter(diffTextFinderShort);
+        final diffSizeShort = tester.getSize(diffTextFinderShort);
+        final wordCountSizeShort = tester.getSize(wordCountFinderShort);
+
+        // Verify difficulty is at the top inside the card
+        expect(
+          diffPosShort.dy - cardTop,
+          lessThanOrEqualTo(PhraseCard.kDifficultyRowHeight),
+        );
+        // Verify subtle divider exists
+        expect(find.byType(Divider), findsOneWidget);
+
+        // Verify word count is right above phrase with small padding
+        final wordCountBottomShort = tester
+            .getBottomLeft(wordCountFinderShort)
+            .dy;
+        final phraseTopShort = tester
+            .getTopLeft(find.text(shortPhrase.text))
+            .dy;
+        final distanceToPhraseShort = phraseTopShort - wordCountBottomShort;
+        expect(distanceToPhraseShort, lessThanOrEqualTo(20));
+        expect(distanceToPhraseShort, greaterThan(0));
+
+        // Verify word count is closer to the phrase than to the divider/difficulty
+        final dividerBottom = tester.getBottomLeft(find.byType(Divider)).dy;
+        final distanceToDividerShort =
+            tester.getTopLeft(wordCountFinderShort).dy - dividerBottom;
+        expect(distanceToPhraseShort, lessThan(distanceToDividerShort));
+
+        // 2. Pump long phrase
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: PhraseCard(
+                phrase: longPhrase,
+                streak: 0,
+                isStreakBonusEnabled: false,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final diffTextFinderLong = find.text(
+          '${longPhrase.difficulty.nameEl} • +${longPhrase.difficulty.points} π.',
+        );
+        final wordCountFinderLong = find.text('11 λέξεις');
+
+        final diffPosLong = tester.getCenter(diffTextFinderLong);
+        final diffSizeLong = tester.getSize(diffTextFinderLong);
+        final wordCountSizeLong = tester.getSize(wordCountFinderLong);
+
+        // Difficulty position & size are strictly unchanged
+        expect(diffPosLong, equals(diffPosShort));
+        expect(diffSizeLong, equals(diffSizeShort));
+
+        // Word count height is strictly preserved
+        expect(wordCountSizeLong.height, equals(wordCountSizeShort.height));
+
+        // Word count remains right above long phrase with small padding
+        final wordCountBottomLong = tester
+            .getBottomLeft(wordCountFinderLong)
+            .dy;
+        final phraseTopLong = tester.getTopLeft(find.text(longPhrase.text)).dy;
+        final distanceToPhraseLong = phraseTopLong - wordCountBottomLong;
+        expect(distanceToPhraseLong, lessThanOrEqualTo(20));
+        expect(distanceToPhraseLong, greaterThan(0));
+
+        // Phrase text is displayed without overflow
+        expect(find.text(longPhrase.text), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

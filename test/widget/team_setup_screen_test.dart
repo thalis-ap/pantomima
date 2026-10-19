@@ -190,5 +190,61 @@ void main() {
       expect(startedConfig, isNotNull);
       expect(startedConfig!.roundDurationSeconds, 120);
     });
+
+    testWidgets(
+      'Custom duration accepts 3600 seconds and rejects 3601 seconds',
+      (tester) async {
+        tester.view.physicalSize = const Size(1080, 2400);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+
+        GameConfiguration? startedConfig;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: TeamSetupScreen(
+              onStartGame: (config) => startedConfig = config,
+            ),
+          ),
+        );
+
+        // Verify standard chips exist
+        expect(find.text(GreekStrings.duration1Min), findsOneWidget);
+        expect(find.text(GreekStrings.duration2Min), findsOneWidget);
+        expect(find.text(GreekStrings.duration3Min), findsOneWidget);
+        expect(find.text(GreekStrings.duration5Min), findsOneWidget);
+        expect(find.text(GreekStrings.durationCustom), findsOneWidget);
+
+        // Select Custom
+        await tester.tap(find.text(GreekStrings.durationCustom));
+        await tester.pumpAndSettle();
+
+        // Find the custom duration text field
+        final durationField = find.widgetWithText(
+          TextField,
+          GreekStrings.customDurationUnit,
+        );
+        expect(durationField, findsOneWidget);
+
+        // Enter 3601 -> should show overflow error
+        await tester.enterText(durationField, '3601');
+        await tester.pumpAndSettle();
+
+        expect(find.text(GreekStrings.durationOverflowError), findsOneWidget);
+
+        // Enter 3600 -> valid
+        await tester.enterText(durationField, '3600');
+        await tester.pumpAndSettle();
+
+        expect(find.text(GreekStrings.durationOverflowError), findsNothing);
+
+        // Start game with 3600s
+        await tester.tap(find.text(GreekStrings.startGame));
+        await tester.pumpAndSettle();
+
+        expect(startedConfig, isNotNull);
+        expect(startedConfig!.roundDurationSeconds, 3600);
+      },
+    );
   });
 }

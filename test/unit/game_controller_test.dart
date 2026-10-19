@@ -800,6 +800,135 @@ void main() {
         expect(controller.currentPhrase, isNotNull);
       },
     );
+
+    test(
+      'resetRound preserves the exact same phrase and restores original duration',
+      () {
+        final teams = [
+          const Team(
+            id: 't1',
+            name: 'Ομάδα Α',
+            score: 10,
+            color: Colors.purple,
+          ),
+          const Team(id: 't2', name: 'Ομάδα Β', score: 5, color: Colors.cyan),
+        ];
+
+        final config = GameConfiguration(
+          mode: GameMode.team,
+          teams: teams,
+          roundDurationSeconds: 120,
+        );
+
+        final controller = GameController(
+          phraseRepository: repository,
+          nowProvider: fakeNow,
+        );
+
+        controller.setupGame(config);
+        controller.startRound();
+
+        final originalPhrase = controller.currentPhrase;
+        expect(originalPhrase, isNotNull);
+
+        // Simulate 30 seconds elapsed and score points
+        fakeCurrentTime = fakeCurrentTime.add(const Duration(seconds: 30));
+        controller.markCorrect(); // Advances phrase, adds score
+
+        final phraseBeforeReset = controller.currentPhrase;
+        expect(phraseBeforeReset, isNotNull);
+        expect(controller.state.teams[0].score, greaterThan(0));
+
+        // Reset round
+        controller.resetRound();
+
+        // Verify exact same phrase is kept
+        expect(controller.currentPhrase, equals(phraseBeforeReset));
+        expect(controller.currentPhrase?.id, equals(phraseBeforeReset?.id));
+        expect(controller.currentPhrase?.text, equals(phraseBeforeReset?.text));
+
+        // Verify duration reset to originally configured 120s
+        expect(controller.remainingSeconds, 120);
+        expect(controller.state.totalDurationSeconds, 120);
+        expect(controller.phase, GamePhase.running);
+
+        // Verify round points reverted
+        expect(controller.state.teams[0].score, 0);
+        expect(controller.state.teams[1].score, 0);
+
+        controller.dispose();
+      },
+    );
+
+    test('resetRound restores custom duration up to 3600 seconds', () {
+      final config = const GameConfiguration(
+        mode: GameMode.freePlay,
+        roundDurationSeconds: 3600,
+      );
+
+      final controller = GameController(
+        phraseRepository: repository,
+        nowProvider: fakeNow,
+      );
+
+      controller.setupGame(config);
+      controller.startRound();
+
+      final initialPhrase = controller.currentPhrase;
+      expect(initialPhrase, isNotNull);
+      expect(controller.remainingSeconds, 3600);
+
+      // Fast forward 500 seconds and pause
+      fakeCurrentTime = fakeCurrentTime.add(const Duration(seconds: 500));
+      controller.pauseRound();
+      expect(controller.phase, GamePhase.paused);
+
+      // Reset round
+      controller.resetRound();
+
+      // State is running, full 3600s restored, same phrase
+      expect(controller.phase, GamePhase.running);
+      expect(controller.remainingSeconds, 3600);
+      expect(controller.state.totalDurationSeconds, 3600);
+      expect(controller.currentPhrase, equals(initialPhrase));
+
+      controller.dispose();
+    });
+
+    test(
+      'resetRound from roundExpired state clears expired state and keeps phrase',
+      () {
+        final config = const GameConfiguration(
+          mode: GameMode.freePlay,
+          roundDurationSeconds: 60,
+        );
+
+        final controller = GameController(
+          phraseRepository: repository,
+          nowProvider: fakeNow,
+        );
+
+        controller.setupGame(config);
+        controller.startRound();
+
+        final initialPhrase = controller.currentPhrase;
+        expect(initialPhrase, isNotNull);
+
+        // Trigger expiration
+        controller.handleExpirationForTesting();
+        expect(controller.phase, GamePhase.roundExpired);
+        expect(controller.remainingSeconds, 0);
+
+        // Reset round
+        controller.resetRound();
+
+        expect(controller.phase, GamePhase.running);
+        expect(controller.remainingSeconds, 60);
+        expect(controller.currentPhrase, equals(initialPhrase));
+
+        controller.dispose();
+      },
+    );
   });
 }
 
